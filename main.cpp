@@ -61,6 +61,6 @@ int main()
         if (sending) {
             printf("%f\r\n", lightSensor.read());
         }
-        ThisThread::sleep_for(10ms);
+        ThisThread::sleep_for(1ms);
     }
 }
