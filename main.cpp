@@ -4,11 +4,12 @@ PwmOut LED(D6);
 AnalogIn lightSensor(A0);
 AnalogOut  aout(PA_4);
 InterruptIn btn(BUTTON1);
+DigitalOut led(LED1);
 
 Thread LEDThread; 
 Thread sensorThread;
-Thread queueThread;
-EventQueue queue;
+//Thread queueThread;
+//EventQueue queue(32 * EVENTS_EVENT_SIZE);
 
 float sample[100];
 bool sending = false;
@@ -28,7 +29,7 @@ void pwmLED()
 void sensor()
 {
     while (true){
-        aout = lightSensor;
+        aout = lightSensor.read();
         ThisThread::sleep_for(1ms);
     }
 }
@@ -36,7 +37,9 @@ void sensor()
 void sendValue()
 {
     sending = !sending;
+    led = !led;
 }
+
 
 int main()
 {
@@ -53,12 +56,11 @@ int main()
     LED.period_ms(5);
     LEDThread.start(pwmLED);
     sensorThread.start(sensor);
-    queueThread.start(callback(&queue, &EventQueue::dispatch_forever));
     btn.rise(&sendValue);
     while (true){
-        if (sending){
-            queue.call(printf, "%f\r\n", lightSensor.read());
-            ThisThread::sleep_for(1ms);
+        if (sending) {
+            printf("%f\r\n", lightSensor.read());
         }
+        ThisThread::sleep_for(10ms);
     }
 }
