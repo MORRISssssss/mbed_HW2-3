@@ -8,8 +8,6 @@ DigitalOut led(LED1);
 
 Thread LEDThread; 
 Thread sensorThread;
-//Thread queueThread;
-//EventQueue queue(32 * EVENTS_EVENT_SIZE);
 
 float sample[100];
 bool sending = false;
