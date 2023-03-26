@@ -10,6 +10,7 @@ Thread LEDThread;
 Thread sensorThread;
 
 float sample[100];
+float sensorValue[1000];
 bool sending = false;
 
 void pwmLED()
@@ -27,8 +28,18 @@ void pwmLED()
 void sensor()
 {
     while (true){
-        aout = lightSensor.read();
-        ThisThread::sleep_for(1ms);
+        if (sending) {
+            for (int i = 0; i < 1000; i++){
+                sensorValue[i] = lightSensor.read();
+                aout = sensorValue[i];
+                ThisThread::sleep_for(1ms);
+            }
+            sending = !sending;
+            led = !led;
+        }else {
+            aout = lightSensor.read();
+            ThisThread::sleep_for(1ms);
+        }
     }
 }
 
@@ -57,7 +68,9 @@ int main()
     btn.rise(&sendValue);
     while (true){
         if (sending) {
-            printf("%f\r\n", lightSensor.read());
+            ThisThread::sleep_for(1500ms);
+            for (int i = 0; i < 1000; i++)
+                printf("%f\r\n", sensorValue[i]);
         }
         ThisThread::sleep_for(1ms);
     }
