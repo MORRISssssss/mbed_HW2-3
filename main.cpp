@@ -9,7 +9,7 @@ DigitalOut led(LED1);
 Thread LEDThread; 
 Thread sensorThread;
 
-float sample[100];
+float sample[20];
 float sensorValue[1000];
 bool sending = false;
 
@@ -20,8 +20,8 @@ void pwmLED()
     {
         LED.pulsewidth_us(5000 * sample[cnt]);
         cnt++;
-        if (cnt == 100) cnt = 0;
-        ThisThread::sleep_for(10ms);
+        if (cnt == 20) cnt = 0;
+        ThisThread::sleep_for(50ms);
     }
 }
 
@@ -52,13 +52,13 @@ void sendValue()
 
 int main()
 {
-    for (int i = 0; i < 100; i++){
-        if (i < 25)
-            sample[i] = (float)i / 25;
-        else if (i < 50)
+    for (int i = 0; i < 20; i++){
+        if (i < 5)
+            sample[i] = (float)i / 5;
+        else if (i < 10)
             sample[i] = 1.;
-        else if (i < 75)
-            sample[i] = 1. - (i - 50.) / 25;
+        else if (i < 15)
+            sample[i] = 1. - (i - 10.) / 5;
         else
             sample[i] = 0;
     }
