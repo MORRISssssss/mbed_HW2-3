@@ -4,14 +4,13 @@ PwmOut LED(D6);
 AnalogIn lightSensor(A0);
 AnalogOut  aout(PA_4);
 InterruptIn btn(BUTTON1);
-DigitalOut led(LED1);
+DigitalOut sending(LED1);
 
 Thread LEDThread; 
 Thread sensorThread;
 
 float sample[20];
 float sensorValue[1000];
-bool sending = false;
 
 void pwmLED()
 {
@@ -35,7 +34,6 @@ void sensor()
                 ThisThread::sleep_for(1ms);
             }
             sending = !sending;
-            led = !led;
         }else {
             aout = lightSensor.read();
             ThisThread::sleep_for(1ms);
@@ -46,7 +44,6 @@ void sensor()
 void sendValue()
 {
     sending = !sending;
-    led = !led;
 }
 
 
